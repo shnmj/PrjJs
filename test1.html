@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="root">
+
+  </div>
+  <script>
+    function makeDom() {
+      return `<div>그림</div>`;
+    }
+
+    function download() {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "http://localhost:8080/test", false); // false는 동기 요청을 의미함
+      xhr.send();
+      return xhr;
+    }
+
+    $("#root").append(makeDom());
+    $("#root").append(makeDom());
+    let xhr = download();
+    $("#root").append(`<div>${xhr.responseText}</div>`);
+    $("#root").append(makeDom());
+  </script>
+</body>
+
+</html>
+4:06
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="root">
+
+  </div>
+  <script>
+    function makeDom() {
+      return `<div>그림</div>`;
+    }
+
+    function download() { // 비동기로 실행 되야 함 -> 1. 무거운 코드를 함수로 만들어서 분리 / 2. 비동기 함수로 수정 /
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "http://192.168.0.99:8080/test", false); // false는 동기 요청을 의미함
+      xhr.send();
+      return xhr;
+    }
+
+    $("#root").append(makeDom());
+    $("#root").append(makeDom());
+    let x = download();
+    $("#root").append(`<div>${x.responseText}</div>`);
+    $("#root").append(makeDom());
+  </script>
+</body>
+
+</html>

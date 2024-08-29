@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="root">
+
+  </div>
+  <script>
+    function makeDom() {
+      return `<div>그림</div>`;
+    }
+
+    function download() {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", "http://localhost:8080/test", false); // false는 동기 요청을 의미함
+      xhr.send();
+      return xhr;
+    }
+
+    $("#root").append(makeDom());
+    $("#root").append(makeDom());
+    let xhr = download();
+    $("#root").append(`<div>${xhr.responseText}</div>`);
+    $("#root").append(makeDom());
+  </script>
+</body>
+
+</html>
+4:06
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="root">
+
+  </div>
+  <script>
+    function makeDom() {
+      return `<div>그림</div>`;
+    }
+
+    async function download() { // 비동기로 실행 되야 함 -> 1. 무거운 코드를 함수로 만들어서 분리 / 2. 비동기 함수로 수정 /
+      let response = await fetch("http://192.168.0.99:8080/test");
+      // 이런 통신 방법은 io가 일어남 = 오래 걸림 -> 즉 이런 작업들은 실행 시 Promise(어음=pending)를 줌
+      // promise 객체 -> response 부분에 promise가 아닌 결정체를 받고싶음
+      // 즉 promise를 안 받기 위해서 await 사용 -> 5초 걸린 후 리얼 값을 넘김. 5초 후 json으로 파싱. 
+      // 여기서 async (비동기함수)를 걸면 5초 걸리는 부분을 체크포인트로 잡고 함수를 빠져나옴
+      // 빠져나오면 메모리는 일(다운)을 계속 하고 있고 cpu는 그 밑의 라인들 실행 ~ 이후 할 일 없으면 await로 다시 back
+      // 
+
+      let data = await response.json(); // 파싱 -> 5초 후 들어와서 5초 후 실행
+      $("#root").append(`<div>${data.body}</div`);
+
+    }
+
+    $("#root").append(makeDom());
+    $("#root").append(makeDom());
+    download();
+    $("#root").append(makeDom());
+  </script>
+</body>
+
+</html>
